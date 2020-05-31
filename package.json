@@ -36,7 +36,11 @@
   "license": "MIT",
   "main": "src/index.js",
   "oclif": {
-    "bin": "wz"
+    "bin": "wz",
+    "commands": "./src/commands",
+    "plugins": [
+      "@oclif/plugin-help"
+    ]
   },
   "repository": "aurghya-0/wz-cli",
   "scripts": {

@@ -28,5 +28,40 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
+* [`wz help [COMMAND]`](#wz-help-command)
+* [`wz stats`](#wz-stats)
 
+## `wz help [COMMAND]`
+
+display help for wz
+
+```
+USAGE
+  $ wz help [COMMAND]
+
+ARGUMENTS
+  COMMAND  command to show help for
+
+OPTIONS
+  --all  see all commands in CLI
+```
+
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.0.1/src/commands/help.ts)_
+
+## `wz stats`
+
+WarZone multiplayer stats
+
+```
+USAGE
+  $ wz stats
+
+OPTIONS
+  -d, --delete   Deletes the config file
+  -h, --help     show CLI help
+  -v, --version  show CLI version
+  -w, --write    Write the data to a csv file
+```
+
+_See code: [src/commands/stats.js](https://github.com/aurghya-0/wz-cli/blob/v0.1.5/src/commands/stats.js)_
 <!-- commandsstop -->
