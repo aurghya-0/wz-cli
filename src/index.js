@@ -73,7 +73,6 @@ class WzCliCommand extends Command {
             SERVICE_NAME,
             config.username
           );
-          console.log(config);
           await this.processData(config.username, password);
         } catch (e) {
           console.log(e);
