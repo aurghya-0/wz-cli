@@ -90,9 +90,13 @@ class StatsCommand extends Command {
       },
       {
         name: "game",
-        message: "Plunder or Normal BR? ",
+        message: "What do you want to know? ",
         type: "list",
-        choices: [{ name: "br" }, { name: "plunder" }],
+        choices: [
+          { name: "br" },
+          { name: "plunder" },
+          { name: "weekly stats" },
+        ],
       },
     ]);
     let battletag = response.battletag;
@@ -126,6 +130,14 @@ class StatsCommand extends Command {
 
               // SHOW THE DATA
               this.log(this.createTable(br_dmz, "PLUNDER"));
+            } else if (game === "weekly stats") {
+              let weeklyData = data.weekly.mode["br_all"].properties;
+              this.log(this.createWeeklyTable(weeklyData));
+              if (flags.write) {
+                this.log(
+                  chalk.red("Writing is only supported in BR and Plunder")
+                );
+              }
             }
           })
           .catch((err) => {
@@ -177,17 +189,60 @@ class StatsCommand extends Command {
       this.log("Written CSV file");
     });
   }
+
+  createWeeklyTable(weeklyData) {
+    const table = new Table();
+    // properties: {
+    //   kills: 104,
+    //     headshots: 17,
+    //     headshotPercentage: 0.16346153846153846,
+    //     kdRatio: 1.6774193548387097,
+    //     killsPerGame: 3.586206896551724,
+    //     assists: 0,
+    //     deaths: 62,
+    //     gulagKills: 14,
+    //     gulagDeaths: 12,
+    //     objectiveTeamWiped: 21,
+    //     objectiveLastStandKill: 59,
+    //     objectiveReviver: 20,
+    //     timePlayed: 70712,
+    //     matchesPlayed: 29,
+    //     executions: 1,
+    // }
+    table.push(
+      [{ content: chalk.green("WEEKLY DATA"), colSpan: 2, hAlign: "center" }],
+      { "Matches Played": weeklyData.matchesPlayed },
+      { Headshots: weeklyData.headshots },
+      { Executions: weeklyData.executions },
+      {
+        "Headshot Percentage": `${(weeklyData.headshotPercentage * 100).toFixed(
+          2
+        )}%`,
+      },
+      { "K-D Ratio": weeklyData.kdRatio.toFixed(2) },
+      { "Average Kills per Game": weeklyData.killsPerGame.toFixed(0) },
+      { Assists: weeklyData.assists },
+      { Deaths: weeklyData.deaths },
+      { "Gulag Kills": weeklyData.gulagKills },
+      { "Gulag Deaths": weeklyData.gulagDeaths },
+      { "Teams Wiped": weeklyData.objectiveTeamWiped },
+      { "Last Stand Kills": weeklyData.objectiveLastStandKill },
+      { "Revived Teammates": `${weeklyData.objectiveReviver} times` },
+      { "Time Played": `${(weeklyData.timePlayed / 3600).toFixed(2)} hours` }
+    );
+
+    return table.toString();
+  }
 }
 
 StatsCommand.description = `WarZone multiplayer stats`;
 
 StatsCommand.flags = {
-  version: flags.version({ char: "v" }),
-  help: flags.help({ char: "h" }),
   write: flags.boolean({
     char: "w",
     description: "Write the data to a csv file",
   }),
   delete: flags.boolean({ char: "d", description: "Deletes the config file" }),
+  help: flags.help({ char: "h" }),
 };
 module.exports = StatsCommand;
