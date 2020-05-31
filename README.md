@@ -15,11 +15,11 @@ Warzone stats from the comfort of your console
 # Usage
 <!-- usage -->
 ```sh-session
-$ npm install -g wz-cli
+$ npm install -g @aurghyadip/wz-cli
 $ wz COMMAND
 running command...
 $ wz (-v|--version|version)
-wz-cli/0.0.1 darwin-x64 node-v14.3.0
+@aurghyadip/wz-cli/0.0.1 darwin-x64 node-v14.3.0
 $ wz --help [COMMAND]
 USAGE
   $ wz COMMAND
