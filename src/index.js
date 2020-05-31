@@ -1,5 +1,6 @@
 const { Command, flags } = require("@oclif/command");
 const fs = require("fs");
+const keytar = require("keytar");
 const inquirer = require("inquirer");
 const { cli } = require("cli-ux");
 const Table = require("cli-table3");
@@ -9,6 +10,8 @@ const API = require("call-of-duty-api")({
   platform: "battle",
   ratelimit: { maxRequests: 2, perMilliseconds: 1000, maxRPS: 2 },
 });
+
+const SERVICE_NAME = "wz-cli";
 
 class WzCliCommand extends Command {
   csvHeader = [
@@ -22,8 +25,9 @@ class WzCliCommand extends Command {
   async run() {
     const { flags } = this.parse(WzCliCommand);
     let config = undefined;
-    const dir = process.cwd();
-    fs.readFile(`${dir}/wzconfig.json`, `utf8`, async (err, data) => {
+    const path = `${process.cwd()}/wzconfig.json`;
+
+    fs.readFile(path, `utf8`, async (err, data) => {
       if (err) {
         let account = await inquirer.prompt([
           {
@@ -39,24 +43,46 @@ class WzCliCommand extends Command {
         ]);
         config = {
           username: account.username,
-          password: account.password,
         };
-        await this.processData(config, dir);
+        await keytar.setPassword(
+          SERVICE_NAME,
+          config.username,
+          account.password
+        );
+        await this.processData(config.username, account.password);
         let json = JSON.stringify(config);
-        fs.writeFile(`${dir}/wzconfig.json`, json, `utf8`, (error, _) => {
+        fs.writeFile(path, json, `utf8`, (error, _) => {
           if (error) {
             console.log(error);
           }
         });
       } else {
         config = JSON.parse(data);
-        console.log(config);
-        await this.processData(config, dir);
+        if (flags.delete) {
+          try {
+            await fs.unlinkSync(path);
+            await keytar.deletePassword(SERVICE_NAME, config.username);
+            this.log("config deleted");
+            return;
+          } catch (e) {
+            console.log(e);
+          }
+        }
+        try {
+          let password = await keytar.getPassword(
+            SERVICE_NAME,
+            config.username
+          );
+          console.log(config);
+          await this.processData(config.username, password);
+        } catch (e) {
+          console.log(e);
+        }
       }
     });
   }
 
-  async processData(config, dir) {
+  async processData(username, password) {
     let response = await inquirer.prompt([
       {
         name: "battletag",
@@ -75,7 +101,7 @@ class WzCliCommand extends Command {
     cli.action.start("Loading data...");
     try {
       // LOGIN INTO API
-      API.login(config.username, config.password).then((_) => {
+      API.login(username, password).then((_) => {
         API.MWwz(battletag)
           .then((data) => {
             cli.action.stop();
@@ -85,7 +111,7 @@ class WzCliCommand extends Command {
 
               // CHECK IF WRITE IS TRUE
               if (flags.write) {
-                this.writeCsv(br, "br", dir, battletag);
+                this.writeCsv(br, "br", battletag);
               }
 
               // SHOW THE DATA
@@ -96,7 +122,7 @@ class WzCliCommand extends Command {
 
               // CHECK IF WRITE IS TRUE
               if (flags.write) {
-                this.writeCsv(br_dmz, "br", dir, battletag);
+                this.writeCsv(br_dmz, "plunder", battletag);
               }
 
               // SHOW THE DATA
@@ -104,6 +130,10 @@ class WzCliCommand extends Command {
             }
           })
           .catch((err) => {
+            keytar
+              .deletePassword(SERVICE_NAME, username)
+              .then((t) => console.log(t))
+              .catch((e) => console.log(e));
             console.log(err);
           });
       });
@@ -137,9 +167,9 @@ class WzCliCommand extends Command {
     return table.toString();
   }
 
-  writeCsv(data, gameType, dir, battletag) {
+  writeCsv(data, gameType, battletag) {
     const csvWriter = createCsvWriter({
-      path: `${dir}/${battletag}_${gameType}.csv"`,
+      path: `${__dirname}/${battletag}_${gameType}.csv"`,
       header: this.csvHeader,
       append: true,
     });
@@ -159,5 +189,6 @@ WzCliCommand.flags = {
     char: "w",
     description: "Write the data to a csv file",
   }),
+  delete: flags.boolean({ char: "d", description: "Deletes the config file" }),
 };
 module.exports = WzCliCommand;

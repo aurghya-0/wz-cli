@@ -19,7 +19,7 @@ $ npm install -g @aurghyadip/wz-cli
 $ wz COMMAND
 running command...
 $ wz (-v|--version|version)
-@aurghyadip/wz-cli/0.0.1 darwin-x64 node-v14.3.0
+@aurghyadip/wz-cli/0.1.0 darwin-x64 node-v14.3.0
 $ wz --help [COMMAND]
 USAGE
   $ wz COMMAND
