@@ -17,7 +17,9 @@
     "cli-ux": "^5.4.6",
     "csv-writer": "^1.6.0",
     "inquirer": "^7.1.0",
-    "keytar": "^6.0.1"
+    "keytar": "^6.0.1",
+    "makensis": "^0.20.3",
+    "r": "0.0.5"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.22.2"
