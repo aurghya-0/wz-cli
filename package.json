@@ -1,7 +1,7 @@
 {
   "name": "@aurghyadip/wz-cli",
   "description": "Warzone stats from the comfort of your console",
-  "version": "0.2.1",
+  "version": "0.2.4",
   "author": "Aurghyadip Kundu",
   "bin": {
     "wz": "./bin/run"
@@ -28,6 +28,7 @@
     "node": ">=8.0.0"
   },
   "files": [
+    "/oclif.manifest.json",
     "/bin",
     "/src"
   ],
@@ -46,9 +47,12 @@
   },
   "repository": "aurghya-0/wz-cli",
   "scripts": {
-    "postpack": "rm -f oclif.manifest.json",
-    "prepack": "oclif-dev manifest && oclif-dev readme",
-    "test": "echo NO TESTS",
+    "clean": "rm -f .oclif.manifest.json",
+    "postpublish": "npm run clean",
+    "posttest": "npm run lint",
+    "prepack": "oclif-dev manifest",
+    "prepublishOnly": "oclif-dev manifest",
+    "preversion": "npm run clean",
     "version": "oclif-dev readme && git add README.md"
   }
 }

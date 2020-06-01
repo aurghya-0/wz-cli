@@ -6,5 +6,6 @@
 /tmp
 /yarn.lock
 wzconfig.json
+oclif.manifest.json
 *.csv
 node_modules
