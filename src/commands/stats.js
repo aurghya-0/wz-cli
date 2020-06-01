@@ -1,6 +1,5 @@
 const { Command, flags } = require("@oclif/command");
 const fs = require("fs");
-const keytar = require("keytar");
 const helpers = require("../helpers/helpers");
 const inquirer = require("inquirer");
 const { cli } = require("cli-ux");
@@ -11,8 +10,6 @@ const API = require("call-of-duty-api")({
   platform: "battle",
   ratelimit: { maxRequests: 2, perMilliseconds: 1000, maxRPS: 2 },
 });
-
-const SERVICE_NAME = "wz-cli";
 
 class StatsCommand extends Command {
   csvHeader = [
@@ -25,7 +22,6 @@ class StatsCommand extends Command {
   ];
   async run() {
     const { flags } = this.parse(StatsCommand);
-    let config = undefined;
     const path = `${process.cwd()}/wzconfig.json`;
 
     fs.readFile(path, `utf8`, async (err, data) => {
@@ -61,32 +57,21 @@ class StatsCommand extends Command {
             let game = response.game;
             cli.action.start("Loading data...");
             try {
-              // LOGIN INTO API
               API.login(username, password).then((_) => {
                 API.MWwz(battletag)
                   .then((data) => {
                     cli.action.stop();
                     if (game === "br") {
-                      // FETCH BR DATA
                       const br = data.lifetime.mode["br"].properties;
-
-                      // CHECK IF WRITE IS TRUE
                       if (flags.write) {
                         this.writeCsv(br, "br", battletag);
                       }
-
-                      // SHOW THE DATA
                       console.log(this.createTable(br, "BATTLE ROYALE"));
                     } else if (game === "plunder") {
-                      // FETCH PLUNDER DATA
                       const br_dmz = data.lifetime.mode["br_dmz"].properties;
-
-                      // CHECK IF WRITE IS TRUE
                       if (flags.write) {
                         this.writeCsv(br_dmz, "plunder", battletag);
                       }
-
-                      // SHOW THE DATA
                       console.log(this.createTable(br_dmz, "PLUNDER"));
                     } else if (game === "weekly stats") {
                       let weeklyData = data.weekly.mode["br_all"].properties;
