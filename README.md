@@ -19,7 +19,7 @@ $ npm install -g @aurghyadip/wz-cli
 $ wz COMMAND
 running command...
 $ wz (-v|--version|version)
-@aurghyadip/wz-cli/0.2.2 darwin-x64 node-v14.3.0
+@aurghyadip/wz-cli/0.2.4 darwin-x64 node-v14.3.0
 $ wz --help [COMMAND]
 USAGE
   $ wz COMMAND
@@ -29,6 +29,7 @@ USAGE
 # Commands
 <!-- commands -->
 * [`wz help [COMMAND]`](#wz-help-command)
+* [`wz login`](#wz-login)
 * [`wz stats`](#wz-stats)
 
 ## `wz help [COMMAND]`
@@ -48,6 +49,24 @@ OPTIONS
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.0.1/src/commands/help.ts)_
 
+## `wz login`
+
+Describe the command here
+
+```
+USAGE
+  $ wz login
+
+OPTIONS
+  -n, --name=name  name to print
+
+DESCRIPTION
+  ...
+  Extra documentation goes here
+```
+
+_See code: [src/commands/login.js](https://github.com/aurghya-0/wz-cli/blob/v0.2.4/src/commands/login.js)_
+
 ## `wz stats`
 
 WarZone multiplayer stats
@@ -62,5 +81,5 @@ OPTIONS
   -w, --write   Write the data to a csv file
 ```
 
-_See code: [src/commands/stats.js](https://github.com/aurghya-0/wz-cli/blob/v0.2.2/src/commands/stats.js)_
+_See code: [src/commands/stats.js](https://github.com/aurghya-0/wz-cli/blob/v0.2.4/src/commands/stats.js)_
 <!-- commandsstop -->
