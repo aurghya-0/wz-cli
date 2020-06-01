@@ -19,7 +19,7 @@ $ npm install -g @aurghyadip/wz-cli
 $ wz COMMAND
 running command...
 $ wz (-v|--version|version)
-@aurghyadip/wz-cli/0.2.0 darwin-x64 node-v14.3.0
+@aurghyadip/wz-cli/0.2.1 darwin-x64 node-v14.3.0
 $ wz --help [COMMAND]
 USAGE
   $ wz COMMAND
@@ -62,5 +62,5 @@ OPTIONS
   -w, --write   Write the data to a csv file
 ```
 
-_See code: [src/commands/stats.js](https://github.com/aurghya-0/wz-cli/blob/v0.2.0/src/commands/stats.js)_
+_See code: [src/commands/stats.js](https://github.com/aurghya-0/wz-cli/blob/v0.2.1/src/commands/stats.js)_
 <!-- commandsstop -->
