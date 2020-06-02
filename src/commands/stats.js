@@ -1,6 +1,6 @@
 const { Command, flags } = require("@oclif/command");
 const fs = require("fs");
-const helpers = require("../helpers/helpers");
+const { pathString, loginHelper } = require("../helpers/helpers");
 const { cli } = require("cli-ux");
 const Table = require("cli-table3");
 const createCsvWriter = require("csv-writer").createObjectCsvWriter;
@@ -17,15 +17,14 @@ class StatsCommand extends Command {
   ];
   async run() {
     const { flags } = this.parse(StatsCommand);
-    const path = `${process.cwd()}/wzconfig.json`;
 
-    fs.readFile(path, `utf8`, async (err, data) => {
+    fs.readFile(pathString, `utf8`, async (err, data) => {
       if (err) {
         console.log(
           "You are not logged in, please login first using the login command..."
         );
       } else {
-        await helpers.loginHelper(data, flags, path, async (data, game) => {
+        await loginHelper(data, flags, pathString, async (data, game) => {
           cli.action.stop();
           if (game === "br") {
             const br = data.lifetime.mode["br"].properties;
@@ -91,7 +90,7 @@ class StatsCommand extends Command {
 
   writeCsv(data, gameType, battletag) {
     const csvWriter = createCsvWriter({
-      path: `${__dirname}/${battletag}_${gameType}.csv"`,
+      pathString: `${__dirname}/${battletag}_${gameType}.csv"`,
       header: this.csvHeader,
       append: true,
     });

@@ -9,6 +9,8 @@ const API = require("call-of-duty-api")({
 const SERVICE_NAME = "wz-cli";
 
 module.exports = {
+  pathString: `${process.cwd()}/wzconfig.json`,
+
   loginHelper: async (data, flags, path, callback) => {
     let config = JSON.parse(data);
     if (flags.delete) {
