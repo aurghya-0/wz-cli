@@ -31,6 +31,7 @@ USAGE
 * [`wz help [COMMAND]`](#wz-help-command)
 * [`wz login`](#wz-login)
 * [`wz stats`](#wz-stats)
+* [`wz weapons`](#wz-weapons)
 
 ## `wz help [COMMAND]`
 
@@ -77,4 +78,22 @@ OPTIONS
 ```
 
 _See code: [src/commands/stats.js](https://github.com/aurghya-0/wz-cli/blob/v0.2.6/src/commands/stats.js)_
+
+## `wz weapons`
+
+Weapon usage details
+
+```
+USAGE
+  $ wz weapons
+
+OPTIONS
+  -h, --help  Help for this command
+
+DESCRIPTION
+  ...
+  Get details on every weapon data you have used...
+```
+
+_See code: [src/commands/weapons.js](https://github.com/aurghya-0/wz-cli/blob/v0.2.6/src/commands/weapons.js)_
 <!-- commandsstop -->

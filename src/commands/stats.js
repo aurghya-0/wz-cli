@@ -1,6 +1,7 @@
 const { Command, flags } = require("@oclif/command");
 const fs = require("fs");
 const { pathString, loginHelper } = require("../helpers/helpers");
+const { statsChoiceList } = require("../helpers/choiceListHelper");
 const { cli } = require("cli-ux");
 const Table = require("cli-table3");
 const createCsvWriter = require("csv-writer").createObjectCsvWriter;
@@ -24,16 +25,11 @@ class StatsCommand extends Command {
           "You are not logged in, please login first using the login command..."
         );
       } else {
-        let choiceList = [
-          { name: "br" },
-          { name: "plunder" },
-          { name: "weekly stats" },
-        ];
         await loginHelper(
           data,
           flags,
           pathString,
-          choiceList,
+          statsChoiceList,
           async (data, game) => {
             cli.action.stop();
             if (game === "br") {

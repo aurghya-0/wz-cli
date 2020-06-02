@@ -32,17 +32,17 @@ module.exports = {
           type: "input",
         },
         {
-          name: "game",
+          name: "choice",
           message: "What do you want to know? ",
           type: "list",
           choices: choiceList,
         },
       ]);
-      const { battletag, game } = response;
+      const { battletag, choice } = response;
       cli.action.start("Loading...");
       await API.login(config.username, password);
       let data = await API.MWwz(battletag);
-      await callback(data, game);
+      await callback(data, choice);
     } catch (e) {
       console.log(e);
     }
