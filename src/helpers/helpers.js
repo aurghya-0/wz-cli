@@ -11,8 +11,8 @@ const SERVICE_NAME = "wz-cli";
 module.exports = {
   pathString: `${process.cwd()}/wzconfig.json`,
 
-  loginHelper: async (data, flags, path, callback) => {
-    let config = JSON.parse(data);
+  loginHelper: async (configData, flags, path, choiceList, callback) => {
+    let config = JSON.parse(configData);
     if (flags.delete) {
       try {
         await fs.unlinkSync(path);
@@ -35,11 +35,7 @@ module.exports = {
           name: "game",
           message: "What do you want to know? ",
           type: "list",
-          choices: [
-            { name: "br" },
-            { name: "plunder" },
-            { name: "weekly stats" },
-          ],
+          choices: choiceList,
         },
       ]);
       const { battletag, game } = response;

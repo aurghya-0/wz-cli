@@ -24,30 +24,41 @@ class StatsCommand extends Command {
           "You are not logged in, please login first using the login command..."
         );
       } else {
-        await loginHelper(data, flags, pathString, async (data, game) => {
-          cli.action.stop();
-          if (game === "br") {
-            const br = data.lifetime.mode["br"].properties;
-            if (flags.write) {
-              this.writeCsv(br, "br", data.username);
-            }
-            console.log(this.createTable(br, "BATTLE ROYALE"));
-          } else if (game === "plunder") {
-            const br_dmz = data["lifetime"].mode["br_dmz"].properties;
-            if (flags.write) {
-              this.writeCsv(br_dmz, "plunder", data.username);
-            }
-            console.log(this.createTable(br_dmz, "PLUNDER"));
-          } else if (game === "weekly stats") {
-            let weeklyData = data["weekly"].mode["br_all"].properties;
-            console.log(this.createWeeklyTable(weeklyData));
-            if (flags.write) {
-              console.log(
-                chalk.red("Writing is only supported in BR and Plunder")
-              );
+        let choiceList = [
+          { name: "br" },
+          { name: "plunder" },
+          { name: "weekly stats" },
+        ];
+        await loginHelper(
+          data,
+          flags,
+          pathString,
+          choiceList,
+          async (data, game) => {
+            cli.action.stop();
+            if (game === "br") {
+              const br = data.lifetime.mode["br"].properties;
+              if (flags.write) {
+                this.writeCsv(br, "br", data.username);
+              }
+              console.log(this.createTable(br, "BATTLE ROYALE"));
+            } else if (game === "plunder") {
+              const br_dmz = data["lifetime"].mode["br_dmz"].properties;
+              if (flags.write) {
+                this.writeCsv(br_dmz, "plunder", data.username);
+              }
+              console.log(this.createTable(br_dmz, "PLUNDER"));
+            } else if (game === "weekly stats") {
+              let weeklyData = data["weekly"].mode["br_all"].properties;
+              console.log(this.createWeeklyTable(weeklyData));
+              if (flags.write) {
+                console.log(
+                  chalk.red("Writing is only supported in BR and Plunder")
+                );
+              }
             }
           }
-        });
+        );
       }
     });
   }
