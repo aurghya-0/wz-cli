@@ -1,7 +1,7 @@
 {
   "name": "@aurghyadip/wz-cli",
   "description": "Warzone stats from the comfort of your console",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "author": "Aurghyadip Kundu",
   "bin": {
     "wz": "./bin/run"
