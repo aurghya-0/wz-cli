@@ -34,7 +34,9 @@
   ],
   "homepage": "https://github.com/aurghya-0/wz-cli",
   "keywords": [
-    "oclif"
+    "oclif",
+    "warzone",
+    "call of duty"
   ],
   "license": "MIT",
   "main": "src/index.js",
