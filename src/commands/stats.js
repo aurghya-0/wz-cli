@@ -57,38 +57,31 @@ class StatsCommand extends Command {
             let game = response.game;
             cli.action.start("Loading data...");
             try {
-              API.login(username, password).then((_) => {
-                API.MWwz(battletag)
-                  .then((data) => {
-                    cli.action.stop();
-                    if (game === "br") {
-                      const br = data.lifetime.mode["br"].properties;
-                      if (flags.write) {
-                        this.writeCsv(br, "br", battletag);
-                      }
-                      console.log(this.createTable(br, "BATTLE ROYALE"));
-                    } else if (game === "plunder") {
-                      const br_dmz = data.lifetime.mode["br_dmz"].properties;
-                      if (flags.write) {
-                        this.writeCsv(br_dmz, "plunder", battletag);
-                      }
-                      console.log(this.createTable(br_dmz, "PLUNDER"));
-                    } else if (game === "weekly stats") {
-                      let weeklyData = data.weekly.mode["br_all"].properties;
-                      console.log(this.createWeeklyTable(weeklyData));
-                      if (flags.write) {
-                        console.log(
-                          chalk.red(
-                            "Writing is only supported in BR and Plunder"
-                          )
-                        );
-                      }
-                    }
-                  })
-                  .catch((err) => {
-                    console.log(err);
-                  });
-              });
+              await API.login(username, password);
+              let data = await API.MWwz(battletag);
+              cli.action.stop();
+              console.log(data2);
+              if (game === "br") {
+                const br = data.lifetime.mode["br"].properties;
+                if (flags.write) {
+                  this.writeCsv(br, "br", battletag);
+                }
+                console.log(this.createTable(br, "BATTLE ROYALE"));
+              } else if (game === "plunder") {
+                const br_dmz = data.lifetime.mode["br_dmz"].properties;
+                if (flags.write) {
+                  this.writeCsv(br_dmz, "plunder", battletag);
+                }
+                console.log(this.createTable(br_dmz, "PLUNDER"));
+              } else if (game === "weekly stats") {
+                let weeklyData = data.weekly.mode["br_all"].properties;
+                console.log(this.createWeeklyTable(weeklyData));
+                if (flags.write) {
+                  console.log(
+                    chalk.red("Writing is only supported in BR and Plunder")
+                  );
+                }
+              }
             } catch (e) {
               console.log(e);
             }
