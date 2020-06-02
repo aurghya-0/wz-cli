@@ -34,13 +34,13 @@ class StatsCommand extends Command {
             }
             console.log(this.createTable(br, "BATTLE ROYALE"));
           } else if (game === "plunder") {
-            const br_dmz = data.lifetime.mode["br_dmz"].properties;
+            const br_dmz = data["lifetime"].mode["br_dmz"].properties;
             if (flags.write) {
               this.writeCsv(br_dmz, "plunder", data.username);
             }
             console.log(this.createTable(br_dmz, "PLUNDER"));
           } else if (game === "weekly stats") {
-            let weeklyData = data.weekly.mode["br_all"].properties;
+            let weeklyData = data["weekly"].mode["br_all"].properties;
             console.log(this.createWeeklyTable(weeklyData));
             if (flags.write) {
               console.log(
@@ -55,6 +55,17 @@ class StatsCommand extends Command {
 
   createTable(gameData, gameType) {
     const table = new Table();
+    const {
+      topFive,
+      timePlayed,
+      kills,
+      downs,
+      topTen,
+      deaths,
+      kdRatio,
+      scorePerMinute,
+      wins,
+    } = gameData;
     table.push(
       [
         {
@@ -63,16 +74,16 @@ class StatsCommand extends Command {
           hAlign: "center",
         },
       ],
-      { Wins: gameData.wins },
-      { "Top 10": gameData.topTen },
-      { "Top 5": gameData.topFive },
-      { Kills: gameData.kills },
-      { Downs: gameData.downs },
-      { Deaths: gameData.deaths },
-      { "K-D Ratio": gameData.kdRatio.toFixed(2) },
-      { "Scores per Minute": gameData.scorePerMinute.toFixed(2) },
+      { Wins: wins },
+      { "Top 10": topTen },
+      { "Top 5": topFive },
+      { Kills: kills },
+      { Downs: downs },
+      { Deaths: deaths },
+      { "K-D Ratio": kdRatio.toFixed(2) },
+      { "Scores per Minute": scorePerMinute.toFixed(2) },
       {
-        "Time Played": `${(gameData.timePlayed / 3600).toFixed(2)} hours`,
+        "Time Played": `${(timePlayed / 3600).toFixed(2)} hours`,
       }
     );
     return table.toString();
@@ -92,26 +103,40 @@ class StatsCommand extends Command {
 
   createWeeklyTable(weeklyData) {
     const table = new Table();
+    const {
+      objectiveTeamWiped,
+      kdRatio,
+      deaths,
+      killsPerGame,
+      headshots,
+      assists,
+      timePlayed,
+      headshotPercentage,
+      objectiveLastStandKill,
+      objectiveReviver,
+      executions,
+      matchesPlayed,
+      gulagDeaths,
+      gulagKills,
+    } = weeklyData;
     table.push(
       [{ content: chalk.green("WEEKLY DATA"), colSpan: 2, hAlign: "center" }],
-      { "Matches Played": weeklyData.matchesPlayed },
-      { Headshots: weeklyData.headshots },
-      { Executions: weeklyData.executions },
+      { "Matches Played": matchesPlayed },
+      { Headshots: headshots },
+      { Executions: executions },
       {
-        "Headshot Percentage": `${(weeklyData.headshotPercentage * 100).toFixed(
-          2
-        )}%`,
+        "Headshot Percentage": `${(headshotPercentage * 100).toFixed(2)}%`,
       },
-      { "K-D Ratio": weeklyData.kdRatio.toFixed(2) },
-      { "Average Kills per Game": weeklyData.killsPerGame.toFixed(0) },
-      { Assists: weeklyData.assists },
-      { Deaths: weeklyData.deaths },
-      { "Gulag Kills": weeklyData.gulagKills },
-      { "Gulag Deaths": weeklyData.gulagDeaths },
-      { "Teams Wiped": weeklyData.objectiveTeamWiped },
-      { "Last Stand Kills": weeklyData.objectiveLastStandKill },
-      { "Revived Teammates": `${weeklyData.objectiveReviver} times` },
-      { "Time Played": `${(weeklyData.timePlayed / 3600).toFixed(2)} hours` }
+      { "K-D Ratio": kdRatio.toFixed(2) },
+      { "Average Kills per Game": killsPerGame.toFixed(0) },
+      { Assists: assists },
+      { Deaths: deaths },
+      { "Gulag Kills": gulagKills },
+      { "Gulag Deaths": gulagDeaths },
+      { "Teams Wiped": objectiveTeamWiped },
+      { "Last Stand Kills": objectiveLastStandKill },
+      { "Revived Teammates": `${objectiveReviver} times` },
+      { "Time Played": `${(timePlayed / 3600).toFixed(2)} hours` }
     );
 
     return table.toString();

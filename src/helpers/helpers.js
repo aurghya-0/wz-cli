@@ -1,5 +1,5 @@
 const fs = require("fs");
-const keytar = require("keytar");
+const kt = require("keytar");
 const inquirer = require("inquirer");
 const { cli } = require("cli-ux");
 const API = require("call-of-duty-api")({
@@ -14,7 +14,7 @@ module.exports = {
     if (flags.delete) {
       try {
         await fs.unlinkSync(path);
-        await keytar.deletePassword(SERVICE_NAME, config.username);
+        await kt.deletePassword(SERVICE_NAME, config.username);
         this.log("config deleted");
         return;
       } catch (e) {
@@ -22,7 +22,7 @@ module.exports = {
       }
     }
     try {
-      let password = await keytar.getPassword(SERVICE_NAME, config.username);
+      let password = await kt.getPassword(SERVICE_NAME, config.username);
       let response = await inquirer.prompt([
         {
           name: "battletag",
@@ -40,8 +40,7 @@ module.exports = {
           ],
         },
       ]);
-      let battletag = response.battletag;
-      let game = response.game;
+      const { battletag, game } = response;
       cli.action.start("Loading...");
       await API.login(config.username, password);
       let data = await API.MWwz(battletag);
