@@ -1,15 +1,10 @@
 const { Command, flags } = require("@oclif/command");
 const fs = require("fs");
 const helpers = require("../helpers/helpers");
-const inquirer = require("inquirer");
 const { cli } = require("cli-ux");
 const Table = require("cli-table3");
 const createCsvWriter = require("csv-writer").createObjectCsvWriter;
 const chalk = require("chalk");
-const API = require("call-of-duty-api")({
-  platform: "battle",
-  ratelimit: { maxRequests: 2, perMilliseconds: 1000, maxRPS: 2 },
-});
 
 class StatsCommand extends Command {
   csvHeader = [
@@ -30,68 +25,35 @@ class StatsCommand extends Command {
           "You are not logged in, please login first using the login command..."
         );
       } else {
-        await helpers.loginHelper(
-          data,
-          flags,
-          path,
-          async (username, password) => {
-            let response = await inquirer.prompt([
-              {
-                name: "battletag",
-                message:
-                  "BattleTag of the user your want to know the stats of: ",
-                type: "input",
-              },
-              {
-                name: "game",
-                message: "What do you want to know? ",
-                type: "list",
-                choices: [
-                  { name: "br" },
-                  { name: "plunder" },
-                  { name: "weekly stats" },
-                ],
-              },
-            ]);
-            let battletag = response.battletag;
-            let game = response.game;
-            cli.action.start("Loading data...");
-            try {
-              await API.login(username, password);
-              let data = await API.MWwz(battletag);
-              cli.action.stop();
-              console.log(data2);
-              if (game === "br") {
-                const br = data.lifetime.mode["br"].properties;
-                if (flags.write) {
-                  this.writeCsv(br, "br", battletag);
-                }
-                console.log(this.createTable(br, "BATTLE ROYALE"));
-              } else if (game === "plunder") {
-                const br_dmz = data.lifetime.mode["br_dmz"].properties;
-                if (flags.write) {
-                  this.writeCsv(br_dmz, "plunder", battletag);
-                }
-                console.log(this.createTable(br_dmz, "PLUNDER"));
-              } else if (game === "weekly stats") {
-                let weeklyData = data.weekly.mode["br_all"].properties;
-                console.log(this.createWeeklyTable(weeklyData));
-                if (flags.write) {
-                  console.log(
-                    chalk.red("Writing is only supported in BR and Plunder")
-                  );
-                }
-              }
-            } catch (e) {
-              console.log(e);
+        await helpers.loginHelper(data, flags, path, async (data, game) => {
+          cli.action.stop();
+          if (game === "br") {
+            const br = data.lifetime.mode["br"].properties;
+            if (flags.write) {
+              this.writeCsv(br, "br", data.username);
+            }
+            console.log(this.createTable(br, "BATTLE ROYALE"));
+          } else if (game === "plunder") {
+            const br_dmz = data.lifetime.mode["br_dmz"].properties;
+            if (flags.write) {
+              this.writeCsv(br_dmz, "plunder", data.username);
+            }
+            console.log(this.createTable(br_dmz, "PLUNDER"));
+          } else if (game === "weekly stats") {
+            let weeklyData = data.weekly.mode["br_all"].properties;
+            console.log(this.createWeeklyTable(weeklyData));
+            if (flags.write) {
+              console.log(
+                chalk.red("Writing is only supported in BR and Plunder")
+              );
             }
           }
-        );
+        });
       }
     });
   }
 
-  createTable(score, gameType) {
+  createTable(gameData, gameType) {
     const table = new Table();
     table.push(
       [
@@ -101,16 +63,16 @@ class StatsCommand extends Command {
           hAlign: "center",
         },
       ],
-      { Wins: score.wins },
-      { "Top 10": score.topTen },
-      { "Top 5": score.topFive },
-      { Kills: score.kills },
-      { Downs: score.downs },
-      { Deaths: score.deaths },
-      { "K-D Ratio": score.kdRatio.toFixed(2) },
-      { "Scores per Minute": score.scorePerMinute.toFixed(2) },
+      { Wins: gameData.wins },
+      { "Top 10": gameData.topTen },
+      { "Top 5": gameData.topFive },
+      { Kills: gameData.kills },
+      { Downs: gameData.downs },
+      { Deaths: gameData.deaths },
+      { "K-D Ratio": gameData.kdRatio.toFixed(2) },
+      { "Scores per Minute": gameData.scorePerMinute.toFixed(2) },
       {
-        "Time Played": `${(score.timePlayed / 3600).toFixed(2)} hours`,
+        "Time Played": `${(gameData.timePlayed / 3600).toFixed(2)} hours`,
       }
     );
     return table.toString();

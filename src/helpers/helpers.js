@@ -1,5 +1,11 @@
 const fs = require("fs");
 const keytar = require("keytar");
+const inquirer = require("inquirer");
+const { cli } = require("cli-ux");
+const API = require("call-of-duty-api")({
+  platform: "battle",
+  ratelimit: { maxRequests: 2, perMilliseconds: 1000, maxRPS: 2 },
+});
 const SERVICE_NAME = "wz-cli";
 
 module.exports = {
@@ -17,7 +23,29 @@ module.exports = {
     }
     try {
       let password = await keytar.getPassword(SERVICE_NAME, config.username);
-      await callback(config.username, password);
+      let response = await inquirer.prompt([
+        {
+          name: "battletag",
+          message: "BattleTag of the user your want to know the stats of: ",
+          type: "input",
+        },
+        {
+          name: "game",
+          message: "What do you want to know? ",
+          type: "list",
+          choices: [
+            { name: "br" },
+            { name: "plunder" },
+            { name: "weekly stats" },
+          ],
+        },
+      ]);
+      let battletag = response.battletag;
+      let game = response.game;
+      cli.action.start("Loading...");
+      await API.login(config.username, password);
+      let data = await API.MWwz(battletag);
+      await callback(data, game);
     } catch (e) {
       console.log(e);
     }
