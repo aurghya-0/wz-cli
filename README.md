@@ -19,7 +19,7 @@ $ npm install -g @aurghyadip/wz-cli
 $ wz COMMAND
 running command...
 $ wz (-v|--version|version)
-@aurghyadip/wz-cli/0.2.4 darwin-x64 node-v14.3.0
+@aurghyadip/wz-cli/0.2.6 darwin-x64 node-v14.3.0
 $ wz --help [COMMAND]
 USAGE
   $ wz COMMAND
@@ -51,21 +51,17 @@ _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.0.1
 
 ## `wz login`
 
-Describe the command here
+Log-in to your activision account or delete account data
 
 ```
 USAGE
   $ wz login
 
 OPTIONS
-  -n, --name=name  name to print
-
-DESCRIPTION
-  ...
-  Extra documentation goes here
+  -d, --delete  Deletes the config file
 ```
 
-_See code: [src/commands/login.js](https://github.com/aurghya-0/wz-cli/blob/v0.2.4/src/commands/login.js)_
+_See code: [src/commands/login.js](https://github.com/aurghya-0/wz-cli/blob/v0.2.6/src/commands/login.js)_
 
 ## `wz stats`
 
@@ -76,10 +72,9 @@ USAGE
   $ wz stats
 
 OPTIONS
-  -d, --delete  Deletes the config file
-  -h, --help    show CLI help
-  -w, --write   Write the data to a csv file
+  -h, --help   show CLI help
+  -w, --write  Write the data to a csv file
 ```
 
-_See code: [src/commands/stats.js](https://github.com/aurghya-0/wz-cli/blob/v0.2.4/src/commands/stats.js)_
+_See code: [src/commands/stats.js](https://github.com/aurghya-0/wz-cli/blob/v0.2.6/src/commands/stats.js)_
 <!-- commandsstop -->
